@@ -7,8 +7,8 @@ import 'swiper/css/navigation'
 
 const Timeline = () => {
   const [activeTimelineIndex, setActiveTimelineIndex] = useState<number>(0)
-  const leftYearRef = useRef<HTMLDivElement | null>(null)
-  const rightYearRef = useRef<HTMLDivElement | null>(null)
+  const leftYearRef = useRef<HTMLDivElement>(null) // Reference for left year
+  const rightYearRef = useRef<HTMLDivElement>(null) // Reference for right year
 
   const timelines = [
     {
@@ -17,7 +17,7 @@ const Timeline = () => {
       years: [
         {
           year: 2015,
-          events: ['Солнечное затмение в Африке', 'Еще событие 2015'],
+          events: ['Солнечное затмение в Африке'],
         },
         { year: 2016, events: ['Обнаружена галактика GN-z11'] },
         { year: 2017, events: ['Tesla представила грузовик Tesla Semi'] },
@@ -41,61 +41,32 @@ const Timeline = () => {
     },
   ]
 
-  const animateYearChange = (
-    fromYear: number,
-    toYear: number,
-    element: HTMLDivElement | null
-  ) => {
-    if (element) {
-      gsap.fromTo(
-        element,
-        { innerText: fromYear },
-        {
-          innerText: toYear,
-          duration: 1,
-          ease: 'power3.out',
-          snap: { innerText: 1 },
-          onUpdate: function () {
-            element.innerText = Math.round(
-              Number(this.targets()[0].innerText)
-            ).toString()
-          },
-        }
-      )
-    }
-  }
-
   useEffect(() => {
-    const currentTimelineYears = timelines[activeTimelineIndex].titleYears
-    const previousTimelineIndex =
-      activeTimelineIndex === 0 ? timelines.length - 1 : activeTimelineIndex - 1
-    const previousTimelineYears = timelines[previousTimelineIndex].titleYears
-
-    animateYearChange(
-      previousTimelineYears[0],
-      currentTimelineYears[0],
-      leftYearRef.current
-    )
-    animateYearChange(
-      previousTimelineYears[1],
-      currentTimelineYears[1],
-      rightYearRef.current
-    )
-  }, [activeTimelineIndex, timelines])
+    if (leftYearRef.current && rightYearRef.current) {
+      gsap.to(leftYearRef.current, {
+        innerText: timelines[activeTimelineIndex].titleYears[0],
+        duration: 1,
+        snap: { innerText: 1 }, // Snap to whole numbers
+      })
+      gsap.to(rightYearRef.current, {
+        innerText: timelines[activeTimelineIndex].titleYears[1],
+        duration: 1,
+        snap: { innerText: 1 },
+      })
+    }
+  }, [activeTimelineIndex])
 
   return (
     <div className="timeline-slider">
       <h1>Исторические даты</h1>
-
-      <div className="timeline-years">
-        <div className="year-left" ref={leftYearRef}>
-          {timelines[0].titleYears[0]}
+      <div className="timeline-years" id="years">
+        <div ref={leftYearRef} className="year-left">
+          {timelines[activeTimelineIndex].titleYears[0]}
         </div>
-        <div className="year-right" ref={rightYearRef}>
-          {timelines[0].titleYears[1]}
+        <div ref={rightYearRef} className="year-right">
+          {timelines[activeTimelineIndex].titleYears[1]}
         </div>
       </div>
-
       <Swiper
         className="timeline-titles"
         modules={[Navigation]}
