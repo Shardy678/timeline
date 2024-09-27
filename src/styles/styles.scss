@@ -1,3 +1,40 @@
 body {
-    color: red;
+  background-color: #f4f5f9;
+  color: #42567a;
+  font-family: 'PT Sans';
+
+  .timeline-title {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    h2 {
+      font-size: 3rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+  }
+  .timeline-years {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 36px;
+    font-weight: bold;
+    gap: 40px;
+  }
+
+  .year-left {
+    color: #5d5fef;
+  }
+
+  .year-right {
+    color: #ef5da8;
+  }
+
+  h3 {
+    margin-top: 20px;
+    font-size: 1.5rem;
+  }
 }

@@ -1,11 +1,8 @@
 import React from 'react'
+import Timeline from './components/Timeline'
 
 const App: React.FC = () => {
-  return (
-    <div>
-      <h1>Hello, React with TypeScript!</h1>
-    </div>
-  )
+  return <Timeline />
 }
 
 export default App
