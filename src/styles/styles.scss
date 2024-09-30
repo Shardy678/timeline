@@ -1,14 +1,22 @@
+$background-color: #f4f5f9;
+$text-color: #42567a;
+$border-color: rgba(66, 86, 119, 0.2);
+$primary-color: #3877ee;
+$fuchsia: #ef5da8;
+$blue: #5d5fef;
+
 body {
-  background-color: #f4f5f9;
+  background-color: $background-color;
   margin: 0;
-  color: #42567a;
+  color: $text-color;
   font-family: 'PT Sans';
+
   .container {
-    position: relative; /* Allow positioning of pseudo-elements */
+    position: relative;
     overflow: hidden;
-    border-left: rgba(66, 86, 119, 0.2) 1px solid; /* Add left border */
-    border-right: rgba(66, 86, 119, 0.2) 1px solid; /* Add right border */
-    margin: 0 160px; /* Adjust margins as needed */
+    border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
+    margin: 0 160px;
     padding-top: 5em;
     height: 100vh;
 
@@ -16,53 +24,52 @@ body {
       margin: 0 80px;
     }
   }
+
   .dates {
     font-size: 50px;
     max-width: 350px;
     margin-bottom: 0;
-    padding-left: 80px; /* Adjust padding to create space for the gradient border */
-    position: relative; /* Required for absolute positioning of the pseudo-element */
+    padding-left: 80px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(to bottom, $primary-color, $fuchsia);
+      z-index: -1;
+    }
   }
 
-  .dates::before {
+  .container::before,
+  .container::after {
     content: '';
     position: absolute;
-    left: 0; /* Position it on the left */
-    top: 0; /* Start from the top */
-    bottom: 0; /* Extend to the bottom */
-    width: 5px; /* Width of the gradient border */
-    background: linear-gradient(
-      to bottom,
-      #3877ee,
-      #ef5da8
-    ); /* Gradient from top to bottom */
-    z-index: -1; /* Place it behind the text */
+    background-color: $border-color;
   }
 
   .container::before {
-    content: ''; /* Required for pseudo-elements */
-    position: absolute;
-    left: 50%; /* Center the vertical line */
-    top: 0; /* Start from the top */
-    height: 100%; /* Full height */
-    width: 1px; /* Width of the vertical line */
-    background-color: rgba(66, 86, 119, 0.2); /* Color of the vertical line */
-    transform: translateX(-50%); /* Centering adjustment */
+    left: 50%;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    transform: translateX(-50%);
   }
+
   .container::after {
-    content: ''; /* Required for pseudo-elements */
-    position: absolute;
-    top: 50%; /* Center the horizontal line */
-    left: 0; /* Start from the left */
-    width: 100%; /* Full width */
-    height: 1px; /* Height of the horizontal line */
-    background-color: rgba(66, 86, 119, 0.2); /* Color of the horizontal line */
-    transform: translateY(-50%); /* Centering adjustment */
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-50%);
   }
 
   .nav-button {
     background-color: transparent;
-    border: #42567a 1px solid;
+    border: 1px solid $text-color;
     color: white;
     padding: 10px 15px;
     border-radius: 50%;
@@ -74,37 +81,32 @@ body {
     width: 50px;
     height: 50px;
     transition: background-color 0.3s;
+
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    &:hover {
+      background-color: #ececec;
+    }
   }
 
-  .nav-button.disabled {
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    pointer-events: none; /* Prevent clicking */
-    opacity: 0.5; /* Make it appear faded */
-  }
-
-  /* Button hover effect */
-  .nav-button:hover {
-    background-color: #ececec;
-  }
-
-  /* Chevron styling using CSS borders */
   .chevron {
     display: inline-block;
-    width: 20px; /* Set the width based on the background image size */
-    height: 20px; /* Set the height based on the background image size */
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzQyNTY3YSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xODEuNjYsMTMzLjY2bC04MCw4MGE4LDgsMCwwLDEtMTEuMzItMTEuMzJMMTY0LjY5LDEyOCw5MC4zNCw1My42NmE4LDgsMCwwLDEsMTEuMzItMTEuMzJsODAsODBBOCw4LDAsMCwxLDE4MS42NiwxMzMuNjZaIj48L3BhdGg+PC9zdmc+');
-    background-size: contain; /* Ensure the image is scaled correctly */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    background-position: center; /* Center the image */
-    cursor: pointer; /* Optional: Add pointer cursor */
+    &.left {
+      transform: rotate(180deg);
+    }
   }
 
-  /* Left chevron (previous) */
-  .chevron.left {
-    transform: rotate(180deg);
-  }
-
-  /* Optional: Align buttons horizontally */
   .nav-buttons {
     display: flex;
     gap: 20px;
@@ -116,18 +118,22 @@ body {
     justify-content: center;
     flex-direction: row;
     gap: 75px;
+
     h1 {
       font-size: 140px;
       margin-top: 20px;
       letter-spacing: -0.05em;
-    }
-    .left-year {
-      color: #5d5fef;
-    }
-    .right-year {
-      color: #ef5da8;
+
+      &.left-year {
+        color: $blue;
+      }
+
+      &.right-year {
+        color: $fuchsia;
+      }
     }
   }
+
   .swiper-container {
     display: flex;
     flex-direction: column;
@@ -137,14 +143,16 @@ body {
       margin: 0;
       font-family: 'Bebas Neue';
       font-size: 25px;
-      color: #3877ee;
+      color: $primary-color;
     }
+
     .events {
       margin: 0;
       font-weight: 400;
       font-size: 20px;
     }
   }
+
   .swiper-button-disabled {
     display: none;
   }
