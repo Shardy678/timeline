@@ -1,11 +1,68 @@
 body {
   background-color: #f4f5f9;
+  margin: 0;
   color: #42567a;
   font-family: 'PT Sans';
+  .container {
+    position: relative; /* Allow positioning of pseudo-elements */
+    overflow: hidden;
+    border-left: rgba(66, 86, 119, 0.2) 1px solid; /* Add left border */
+    border-right: rgba(66, 86, 119, 0.2) 1px solid; /* Add right border */
+    margin: 0 160px; /* Adjust margins as needed */
+    padding-top: 5em;
+    height: 100vh;
+
+    .content {
+      margin: 0 80px;
+    }
+  }
+  .dates {
+    font-size: 50px;
+    max-width: 350px;
+    margin-bottom: 0;
+    padding-left: 80px; /* Adjust padding to create space for the gradient border */
+    position: relative; /* Required for absolute positioning of the pseudo-element */
+  }
+
+  .dates::before {
+    content: '';
+    position: absolute;
+    left: 0; /* Position it on the left */
+    top: 0; /* Start from the top */
+    bottom: 0; /* Extend to the bottom */
+    width: 5px; /* Width of the gradient border */
+    background: linear-gradient(
+      to bottom,
+      #3877ee,
+      #ef5da8
+    ); /* Gradient from top to bottom */
+    z-index: -1; /* Place it behind the text */
+  }
+
+  .container::before {
+    content: ''; /* Required for pseudo-elements */
+    position: absolute;
+    left: 50%; /* Center the vertical line */
+    top: 0; /* Start from the top */
+    height: 100%; /* Full height */
+    width: 1px; /* Width of the vertical line */
+    background-color: rgba(66, 86, 119, 0.2); /* Color of the vertical line */
+    transform: translateX(-50%); /* Centering adjustment */
+  }
+  .container::after {
+    content: ''; /* Required for pseudo-elements */
+    position: absolute;
+    top: 50%; /* Center the horizontal line */
+    left: 0; /* Start from the left */
+    width: 100%; /* Full width */
+    height: 1px; /* Height of the horizontal line */
+    background-color: rgba(66, 86, 119, 0.2); /* Color of the horizontal line */
+    transform: translateY(-50%); /* Centering adjustment */
+  }
 
   .nav-button {
-    background-color: #f5f5f5;
-    border: gray 1px solid;
+    background-color: transparent;
+    border: #42567a 1px solid;
     color: white;
     padding: 10px 15px;
     border-radius: 50%;
@@ -19,6 +76,12 @@ body {
     transition: background-color 0.3s;
   }
 
+  .nav-button.disabled {
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    pointer-events: none; /* Prevent clicking */
+    opacity: 0.5; /* Make it appear faded */
+  }
+
   /* Button hover effect */
   .nav-button:hover {
     background-color: #ececec;
@@ -27,21 +90,18 @@ body {
   /* Chevron styling using CSS borders */
   .chevron {
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    border: solid gray;
-    border-width: 0 2px 2px 0;
-    padding: 5px;
+    width: 20px; /* Set the width based on the background image size */
+    height: 20px; /* Set the height based on the background image size */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzQyNTY3YSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xODEuNjYsMTMzLjY2bC04MCw4MGE4LDgsMCwwLDEtMTEuMzItMTEuMzJMMTY0LjY5LDEyOCw5MC4zNCw1My42NmE4LDgsMCwwLDEsMTEuMzItMTEuMzJsODAsODBBOCw4LDAsMCwxLDE4MS42NiwxMzMuNjZaIj48L3BhdGg+PC9zdmc+');
+    background-size: contain; /* Ensure the image is scaled correctly */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center; /* Center the image */
+    cursor: pointer; /* Optional: Add pointer cursor */
   }
 
   /* Left chevron (previous) */
   .chevron.left {
-    transform: rotate(135deg);
-  }
-
-  /* Right chevron (next) */
-  .chevron.right {
-    transform: rotate(-45deg);
+    transform: rotate(180deg);
   }
 
   /* Optional: Align buttons horizontally */
@@ -52,7 +112,67 @@ body {
 
   .title-years {
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: row;
-    gap: 20px;
+    gap: 75px;
+    h1 {
+      font-size: 140px;
+      margin-top: 20px;
+      letter-spacing: -0.05em;
+    }
+    .left-year {
+      color: #5d5fef;
+    }
+    .right-year {
+      color: #ef5da8;
+    }
+  }
+  .swiper-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .year {
+      margin: 0;
+      font-family: 'Bebas Neue';
+      font-size: 25px;
+      color: #3877ee;
+    }
+    .events {
+      margin: 0;
+      font-weight: 400;
+      font-size: 20px;
+    }
+  }
+  .swiper-button-disabled {
+    display: none;
+  }
+
+  .swiper-button-next {
+    background-color: white;
+    box-shadow: 0 0 15px 0 rgba(56, 119, 238, 0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzM4NzdlZSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xODQuNDksMTM2LjQ5bC04MCw4MGExMiwxMiwwLDAsMS0xNy0xN0wxNTksMTI4LDg3LjUxLDU2LjQ5YTEyLDEyLDAsMSwxLDE3LTE3bDgwLDgwQTEyLDEyLDAsMCwxLDE4NC40OSwxMzYuNDlaIj48L3BhdGg+PC9zdmc+');
+  }
+  .swiper-button-prev {
+    background-color: white;
+    box-shadow: 0 0 15px 0 rgba(56, 119, 238, 0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzM4NzdlZSIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xNjguNDksMTk5LjUxYTEyLDEyLDAsMCwxLTE3LDE3bC04MC04MGExMiwxMiwwLDAsMSwwLTE3bDgwLTgwYTEyLDEyLDAsMCwxLDE3LDE3TDk3LDEyOFoiPjwvcGF0aD48L3N2Zz4=');
+  }
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    content: '';
   }
 }

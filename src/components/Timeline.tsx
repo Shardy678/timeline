@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import gsap from 'gsap'
+import { Navigation } from 'swiper/modules'
 
 const Timeline = () => {
   const [activeSlide, setActiveSlide] = useState(0)
@@ -85,39 +86,51 @@ const Timeline = () => {
   }, [activeSlide])
 
   return (
-    <>
-      <div className="title-years">
-        <h1 className="left-year">{timelines[activeSlide].titleYears[0]}</h1>
-        <h1 className="right-year">{timelines[activeSlide].titleYears[1]}</h1>
-      </div>
-      <p>{`0${activeSlide + 1}/06`}</p>
+    <div className="container">
+      <h1 className="dates">Исторические даты</h1>
+      <div className="content">
+        <div className="title-years">
+          <h1 className="left-year">{timelines[activeSlide].titleYears[0]}</h1>
+          <h1 className="right-year">{timelines[activeSlide].titleYears[1]}</h1>
+        </div>
+        <p>{`0${activeSlide + 1}/06`}</p>
 
-      <div className="nav-buttons">
-        <button
-          onClick={() => setActiveSlide(Math.max(0, activeSlide - 1))}
-          className="nav-button prev"
+        <div className="nav-buttons">
+          <button
+            onClick={() => setActiveSlide(Math.max(0, activeSlide - 1))}
+            disabled={activeSlide === 0}
+            className={`nav-button prev ${activeSlide === 0 ? 'disabled' : ''}`}
+          >
+            <span className="chevron left"></span>
+          </button>
+          <button
+            disabled={activeSlide === 5}
+            onClick={() =>
+              setActiveSlide(Math.min(totalCircles - 1, activeSlide + 1))
+            }
+            className={`nav-button next ${activeSlide === 5 ? 'disabled' : ''}`}
+          >
+            <span className="chevron right"></span>
+          </button>
+        </div>
+        <h3>{timelines[activeSlide].title}</h3>
+        <Swiper
+          className="myswiper"
+          slidesPerView={3}
+          modules={[Navigation]}
+          navigation
         >
-          <span className="chevron left"></span>
-        </button>
-        <button
-          onClick={() =>
-            setActiveSlide(Math.min(totalCircles - 1, activeSlide + 1))
-          }
-          className="nav-button next"
-        >
-          <span className="chevron right"></span>
-        </button>
+          {timelines[activeSlide].years.map((event, index) => (
+            <SwiperSlide key={index}>
+              <div className="swiper-container">
+                <p className="year">{event.year}</p>
+                <h3 className="events">{event.events}</h3>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
-      <h3>{timelines[activeSlide].title}</h3>
-      <Swiper slidesPerView={3}>
-        {timelines[activeSlide].years.map((event, index) => (
-          <SwiperSlide key={index}>
-            <p>{event.year}</p>
-            <h3>{event.events}</h3>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </>
+    </div>
   )
 }
 
