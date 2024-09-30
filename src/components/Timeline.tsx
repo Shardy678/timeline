@@ -52,7 +52,16 @@ const Timeline: React.FC = () => {
 
     positionDots()
 
-    const slideDifference = activeSlide - previousSlide
+    const totalSlides = totalCircles
+
+    let slideDifference = activeSlide - previousSlide
+
+    if (slideDifference > totalSlides / 2) {
+      slideDifference -= totalSlides
+    } else if (slideDifference < -totalSlides / 2) {
+      slideDifference += totalSlides
+    }
+
     const newRotation = rotation - slideDifference * anglePerDot
 
     gsap.to('.circle-container', {
