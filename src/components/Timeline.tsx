@@ -10,15 +10,15 @@ import timelines from '../timelines.json'
 const Timeline: React.FC = () => {
   const [timelinesData, setTimelines] = useState<TimelinesData>(timelines)
   const [activeSlide, setActiveSlide] = useState(0)
-  const [previousSlide, setPreviousSlide] = useState(0) // Track the previous slide
+  const [previousSlide, setPreviousSlide] = useState(0)
   const swiperRef = useRef<any>(null)
 
   const totalCircles = timelinesData.timelines.length
   const circles = Array.from({ length: totalCircles }, (_, index) => index + 1)
   const radius = 265
 
-  const [rotation, setRotation] = useState(0) // Track the rotation state
-  const anglePerDot = 360 / totalCircles // The angle between each dot
+  const [rotation, setRotation] = useState(0)
+  const anglePerDot = 360 / totalCircles
   const years = timelinesData.timelines[activeSlide].titleYears
 
   useEffect(() => {
@@ -48,16 +48,12 @@ const Timeline: React.FC = () => {
       { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
     )
 
-    // Update the position of dots
     positionDots()
 
-    // Calculate the difference in slide indices to determine rotation direction
     const slideDifference = activeSlide - previousSlide
 
-    // Calculate the new rotation based on the slide difference
     const newRotation = rotation - slideDifference * anglePerDot
 
-    // Animate the rotation using GSAP
     gsap.to('.circle-container', {
       rotate: newRotation,
       duration: 0.75,
@@ -66,7 +62,6 @@ const Timeline: React.FC = () => {
 
     gsap.to('.dot', { rotation: -newRotation, duration: 0, ease: 'none' })
 
-    // Update the rotation state and the previous slide
     setRotation(newRotation)
     setPreviousSlide(activeSlide)
   }, [activeSlide])
