@@ -4,6 +4,12 @@ $border-color: rgba(66, 86, 119, 0.2);
 $primary-color: #3877ee;
 $fuchsia: #ef5da8;
 $blue: #5d5fef;
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
 
 body {
   background-color: $background-color;
@@ -12,13 +18,13 @@ body {
   font-family: 'PT Sans';
 
   .container {
+    height: 92vh;
     position: relative;
     overflow: hidden;
     border-left: 1px solid $border-color;
     border-right: 1px solid $border-color;
-    margin: 0 160px;
+    margin: 0 160px 0 320px;
     padding-top: 5em;
-    height: 100vh;
 
     .content {
       margin: 0 80px;
@@ -120,9 +126,10 @@ body {
     gap: 75px;
 
     h1 {
-      font-size: 140px;
-      margin-top: 20px;
+      font-size: 200px;
+      margin-top: 80px;
       letter-spacing: -0.05em;
+      margin-bottom: 0;
 
       &.left-year {
         color: $blue;
@@ -182,5 +189,44 @@ body {
   .swiper-button-next::after,
   .swiper-button-prev::after {
     content: '';
+  }
+  .circle-container {
+    width: 530px; //
+    height: 530px;
+    border: $border-color 1px solid;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    .dot {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      border: $text-color 1px solid;
+      justify-content: center;
+      border-radius: 50%;
+      align-items: center;
+      color: transparent;
+      transform: translate(-50%, -50%);
+      background-color: $text-color;
+      align-content: center;
+      width: 6px;
+      height: 6px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      cursor: pointer;
+      transition: all 0.5s;
+
+      &.active {
+        width: 56px;
+        height: 56px;
+        background-color: transparent;
+        color: $text-color;
+        transition: all 0.5s;
+      }
+    }
   }
 }

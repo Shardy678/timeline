@@ -13,6 +13,9 @@ const Timeline: React.FC = () => {
   const swiperRef = useRef<any>(null)
 
   const years = timelinesData.timelines[activeSlide].titleYears
+  const totalCircles = timelinesData.timelines.length
+  const circles = Array.from({ length: totalCircles }, (_, index) => index + 1)
+  const radius = 265
 
   useEffect(() => {
     gsap.fromTo(
@@ -40,67 +43,104 @@ const Timeline: React.FC = () => {
       { opacity: 0, y: 25 },
       { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
     )
+
+    // Update the position of dots
+    positionDots()
   }, [activeSlide])
 
-  const totalCircles = timelinesData.timelines.length
+  const positionDots = () => {
+    circles.forEach((_, index) => {
+      const angle = (360 / totalCircles) * index - 60
+      const x = Math.cos((angle * Math.PI) / 180) * radius
+      const y = Math.sin((angle * Math.PI) / 180) * radius
+
+      gsap.set(`.dot:nth-child(${index + 1})`, {
+        x: x,
+        y: y,
+        transformOrigin: '50% 50%',
+        duration: 0,
+      })
+    })
+  }
+
+  const handleActiveSlideChange = (newSlide: number) => {
+    setActiveSlide(newSlide)
+    swiperRef.current.slideTo(newSlide)
+  }
 
   return (
-    <div className="container">
-      <h1 className="dates">Исторические даты</h1>
-      <div className="content">
-        <div className="title-years">
-          <h1 className="left-year">{years[0]}</h1>
-          <h1 className="right-year">{years[1]}</h1>
-        </div>
-        <p>{`0${activeSlide + 1}/06`}</p>
-
-        <div className="nav-buttons">
-          <button
-            onClick={() => {
-              const newIndex = Math.max(0, activeSlide - 1)
-              setActiveSlide(newIndex)
-              swiperRef.current.slideTo(newIndex)
-            }}
-            disabled={activeSlide === 0}
-            className={`nav-button prev ${activeSlide === 0 ? 'disabled' : ''}`}
-          >
-            <span className="chevron left"></span>
-          </button>
-          <button
-            disabled={activeSlide === totalCircles - 1}
-            onClick={() => {
-              const newIndex = Math.min(totalCircles - 1, activeSlide + 1)
-              setActiveSlide(newIndex)
-              swiperRef.current.slideTo(newIndex)
-            }}
-            className={`nav-button next ${
-              activeSlide === totalCircles - 1 ? 'disabled' : ''
-            }`}
-          >
-            <span className="chevron right"></span>
-          </button>
-        </div>
-        <h3>{timelinesData.timelines[activeSlide].title}</h3>
-        <Swiper
-          onInit={(swiper) => {
-            swiperRef.current = swiper
-          }}
-          className="myswiper"
-          slidesPerView={3}
-          modules={[Navigation]}
-          navigation
-        >
-          {timelinesData.timelines[activeSlide].years.map((event, index) => (
-            <SwiperSlide key={index}>
-              <div className="swiper-container">
-                <p className="year">{event.year}</p>
-                <h3 className="events">{event.events}</h3>
+    <>
+      <div className="container">
+        <div className="circle-container">
+          {circles.map((circle, index) => (
+            <div
+              key={index}
+              className={`dot ${activeSlide === index ? 'active' : ''}`}
+              onClick={() => handleActiveSlideChange(index)}
+            >
+              <div className="dot-content">
+                <span>{circle}</span>
               </div>
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
+
+        <h1 className="dates">Исторические даты</h1>
+        <div className="content">
+          <div className="title-years">
+            <h1 className="left-year">{years[0]}</h1>
+            <h1 className="right-year">{years[1]}</h1>
+          </div>
+          <p>{`0${activeSlide + 1}/06`}</p>
+
+          <div className="nav-buttons">
+            <button
+              onClick={() => {
+                const newIndex = Math.max(0, activeSlide - 1)
+                handleActiveSlideChange(newIndex)
+              }}
+              disabled={activeSlide === 0}
+              className={`nav-button prev ${
+                activeSlide === 0 ? 'disabled' : ''
+              }`}
+            >
+              <span className="chevron left"></span>
+            </button>
+            <button
+              onClick={() => {
+                const newIndex = Math.min(totalCircles - 1, activeSlide + 1)
+                handleActiveSlideChange(newIndex)
+              }}
+              disabled={activeSlide === totalCircles - 1}
+              className={`nav-button next ${
+                activeSlide === totalCircles - 1 ? 'disabled' : ''
+              }`}
+            >
+              <span className="chevron right"></span>
+            </button>
+          </div>
+          <h3>{timelinesData.timelines[activeSlide].title}</h3>
+          <Swiper
+            onInit={(swiper) => {
+              swiperRef.current = swiper
+            }}
+            className="myswiper"
+            slidesPerView={3}
+            modules={[Navigation]}
+            navigation
+          >
+            {timelinesData.timelines[activeSlide].years.map((event, index) => (
+              <SwiperSlide key={index}>
+                <div className="swiper-container">
+                  <p className="year">{event.year}</p>
+                  <h3 className="events">{event.events}</h3>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
