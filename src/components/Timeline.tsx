@@ -11,7 +11,9 @@ const Timeline: React.FC = () => {
   const [timelinesData, setTimelines] = useState<TimelinesData>(timelines)
   const [activeSlide, setActiveSlide] = useState(0)
   const [previousSlide, setPreviousSlide] = useState(0)
+  const [isFirstLoad, setIsFirstLoad] = useState(true) // New state to track initial load
   const swiperRef = useRef<any>(null)
+  const pRefs = useRef<(HTMLParagraphElement | null)[]>([])
 
   const totalCircles = timelinesData.timelines.length
   const circles = Array.from({ length: totalCircles }, (_, index) => index + 1)
@@ -22,6 +24,7 @@ const Timeline: React.FC = () => {
   const years = timelinesData.timelines[activeSlide].titleYears
 
   useEffect(() => {
+    // Set initial year animations
     gsap.fromTo(
       '.left-year',
       { innerText: years[0] - 1 },
@@ -51,19 +54,41 @@ const Timeline: React.FC = () => {
     positionDots()
 
     const slideDifference = activeSlide - previousSlide
-
     const newRotation = rotation - slideDifference * anglePerDot
 
+    // Animate the rotation of the circle
     gsap.to('.circle-container', {
       rotate: newRotation,
       duration: 0.75,
       ease: 'power2.out',
+      onComplete: () => {
+        // Fade in the <p> element for the new active slide
+        if (pRefs.current[activeSlide]) {
+          gsap.fromTo(
+            pRefs.current[activeSlide],
+            { opacity: 0, y: 10 }, // Start at opacity 0, slightly below its final position
+            { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' } // Fade in with upward motion
+          )
+        }
+      },
     })
-
     gsap.to('.dot', { rotation: -newRotation, duration: 0, ease: 'none' })
 
+    // Only perform fade out if not the first load
+    if (!isFirstLoad && pRefs.current[previousSlide]) {
+      gsap.fromTo(
+        pRefs.current[previousSlide],
+        { opacity: 1, y: 0 }, // Start at full opacity and original position
+        { opacity: 0, y: 10, duration: 0.75, ease: 'power2.out' } // Fade out to opacity 0 and move down
+      )
+    }
+
+    // Update rotation and previous slide
     setRotation(newRotation)
     setPreviousSlide(activeSlide)
+
+    // Set isFirstLoad to false after the first render
+    setIsFirstLoad(false)
   }, [activeSlide])
 
   const positionDots = () => {
@@ -98,6 +123,9 @@ const Timeline: React.FC = () => {
             >
               <div className="dot-content">
                 <span>{circle}</span>
+                <p ref={(el) => (pRefs.current[index] = el)}>
+                  {timelinesData.timelines[activeSlide].title}
+                </p>
               </div>
             </div>
           ))}
@@ -137,7 +165,6 @@ const Timeline: React.FC = () => {
               <span className="chevron right"></span>
             </button>
           </div>
-          <h3>{timelinesData.timelines[activeSlide].title}</h3>
           <Swiper
             onInit={(swiper) => {
               swiperRef.current = swiper
