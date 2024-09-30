@@ -63,23 +63,20 @@ const Timeline: React.FC = () => {
       ease: 'power2.out',
       onComplete: () => {
         // Fade in the <p> element for the new active slide
-        if (pRefs.current[activeSlide]) {
-          gsap.fromTo(
-            pRefs.current[activeSlide],
-            { opacity: 0, y: 10 }, // Start at opacity 0, slightly below its final position
-            { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' } // Fade in with upward motion
-          )
-        }
+        gsap.fromTo(
+          pRefs.current[activeSlide],
+          { opacity: 0, y: 10 }, // Start at opacity 0, slightly below its final position
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' } // Fade in with upward motion
+        )
       },
     })
     gsap.to('.dot', { rotation: -newRotation, duration: 0, ease: 'none' })
 
     // Only perform fade out if not the first load
-    if (!isFirstLoad && pRefs.current[previousSlide]) {
-      gsap.fromTo(
+    if (!isFirstLoad) {
+      gsap.to(
         pRefs.current[previousSlide],
-        { opacity: 1, y: 0 }, // Start at full opacity and original position
-        { opacity: 0, y: 10, duration: 0.75, ease: 'power2.out' } // Fade out to opacity 0 and move down
+        { opacity: 0, duration: 0, ease: 'none' } // Fade out to opacity 0 and move down
       )
     }
 
@@ -102,6 +99,7 @@ const Timeline: React.FC = () => {
         y: y,
         transformOrigin: '50% 50%',
         duration: 0,
+        ease: 'none',
       })
     })
   }

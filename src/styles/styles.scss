@@ -209,7 +209,7 @@ body {
       display: flex;
       flex-direction: row;
       align-items: center;
-      border: $text-color 1px solid;
+      border: 2px solid rgba(66, 86, 119, 0.2);
       justify-content: center;
       border-radius: 50%;
       align-items: center;
@@ -239,6 +239,16 @@ body {
       span {
         opacity: 0; // Hidden by default
         transition: opacity 0.3s; // Smooth transition for opacity
+      }
+      span:hover {
+        opacity: 1;
+      }
+
+      &:hover {
+        width: 56px;
+        height: 56px;
+        background-color: transparent;
+        color: $text-color;
       }
 
       &:hover span {
