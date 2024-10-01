@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 import gsap from 'gsap'
-import { Navigation } from 'swiper/modules'
+import { Navigation, Pagination } from 'swiper/modules'
 import { TimelinesData } from '../timelineTypes'
 import timelines from '../timelines.json'
 
@@ -139,7 +140,12 @@ const Timeline: React.FC = () => {
             <h1 className="left-year">{years[0]}</h1>
             <h1 className="right-year">{years[1]}</h1>
           </div>
-          <p>{`0${activeSlide + 1}/06`}</p>
+          <p className="mobile-title">
+            {timelinesData.timelines[activeSlide].title}
+          </p>
+
+          <hr />
+          <p className="pagination">{`0${activeSlide + 1}/06`}</p>
 
           <div className="nav-buttons">
             <button
@@ -173,8 +179,22 @@ const Timeline: React.FC = () => {
             }}
             className="myswiper"
             slidesPerView={3}
-            modules={[Navigation]}
+            breakpoints={{
+              1440: {
+                slidesPerView: 3.5,
+              },
+              968: {
+                slidesPerView: 2.5,
+              },
+              440: {
+                slidesPerView: 1.5,
+              },
+            }}
+            modules={[Navigation, Pagination]}
             navigation
+            pagination={{
+              clickable: true,
+            }}
           >
             {timelinesData.timelines[activeSlide].years.map((event, index) => (
               <SwiperSlide key={index}>
@@ -185,6 +205,35 @@ const Timeline: React.FC = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+        </div>
+      </div>
+      <div className="swiper-pagination"></div>
+
+      <div className="mobile-nav-buttons">
+        <p className="pagination">{`0${activeSlide + 1}/06`}</p>
+        <div className="button-container">
+          <button
+            onClick={() => {
+              const newIndex = Math.max(0, activeSlide - 1)
+              handleActiveSlideChange(newIndex)
+            }}
+            disabled={activeSlide === 0}
+            className={`nav-button prev ${activeSlide === 0 ? 'disabled' : ''}`}
+          >
+            <span className="chevron left"></span>
+          </button>
+          <button
+            onClick={() => {
+              const newIndex = Math.min(totalCircles - 1, activeSlide + 1)
+              handleActiveSlideChange(newIndex)
+            }}
+            disabled={activeSlide === totalCircles - 1}
+            className={`nav-button next ${
+              activeSlide === totalCircles - 1 ? 'disabled' : ''
+            }`}
+          >
+            <span className="chevron right"></span>
+          </button>
         </div>
       </div>
     </>
