@@ -25,6 +25,7 @@ const Timeline: React.FC = () => {
   const years = timelinesData.timelines[activeSlide].titleYears
 
   useEffect(() => {
+    // Animate year changes
     gsap.fromTo(
       '.left-year',
       { innerText: years[0] - 1 },
@@ -111,7 +112,7 @@ const Timeline: React.FC = () => {
 
   const handleActiveSlideChange = (newSlide: number) => {
     setActiveSlide(newSlide)
-    swiperRef.current.slideTo(newSlide)
+    swiperRef.current.activeSlide = newSlide
   }
 
   return (
@@ -173,6 +174,7 @@ const Timeline: React.FC = () => {
               <span className="chevron right"></span>
             </button>
           </div>
+
           <Swiper
             onInit={(swiper) => {
               swiperRef.current = swiper
