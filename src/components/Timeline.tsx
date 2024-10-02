@@ -106,7 +106,10 @@ const Timeline: React.FC = () => {
     setRotation(newRotation)
   }
 
-  const handleSlideChange = (newSlide: number) => setActiveSlide(newSlide)
+  const handleSlideChange = (newSlide: number) => {
+    setActiveSlide(newSlide)
+    swiperRef.current.slideTo(0)
+  }
 
   const renderNavButton = (
     direction: 'prev' | 'next',
